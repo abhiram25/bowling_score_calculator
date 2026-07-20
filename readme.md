@@ -49,4 +49,4 @@ ruby bowling_score_calculator_test.rb
 - The calculator returns **per-frame scores**, not cumulative scores.
 - Frames that cannot yet be scored because the required bonus rolls are unavailable return `nil`.
 - Incomplete games are supported.
-- See `assumptions.md` for implementation assumptions.
+- See `assumptions.md` for implementation assumptions.# bowling_score_calculator
