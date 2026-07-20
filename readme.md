@@ -31,17 +31,7 @@ ruby bowling_score_calculator.rb
 Run the Minitest suite:
 
 ```bash
-ruby bowling_score_calculator_test.rb
-```
-
-## Project Structure
-
-```
-.
-├── bowling_score_calculator.rb
-├── bowling_score_calculator_test.rb
-├── assumptions.md
-└── README.md
+ruby test/bowling_score_calculator_test.rb
 ```
 
 ## Notes
