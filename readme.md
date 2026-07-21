@@ -26,6 +26,41 @@ From the project root, run:
 ruby bowling_score_calculator.rb
 ```
 
+## Running in IRB
+
+From the project root, start IRB:
+
+```bash
+irb
+```
+
+Load the calculator:
+
+```ruby
+require_relative "./bowling_score_calculator"
+```
+
+Create an instance:
+
+```ruby
+calculator = BowlingScoreCalculator.new
+```
+
+Calculate frame scores:
+
+```ruby
+calculator.calculate_frames([
+  4, 5, 4, 5, 4, 5, 4, 5, 4, 5,
+  4, 5, 4, 5, 4, 5, 4, 5, 4, 5
+])
+```
+
+Expected output:
+
+```ruby
+[9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+```
+
 ## Running the Tests
 
 Run the Minitest suite:
@@ -39,4 +74,4 @@ ruby test/bowling_score_calculator_test.rb
 - The calculator returns **per-frame scores**, not cumulative scores.
 - Frames that cannot yet be scored because the required bonus rolls are unavailable return `nil`.
 - Incomplete games are supported.
-- See `assumptions.md` for implementation assumptions.# bowling_score_calculator
+- See `assumptions.md` for implementation assumptions.

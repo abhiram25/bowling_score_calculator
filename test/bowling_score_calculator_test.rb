@@ -2,19 +2,22 @@ require "minitest/autorun"
 require_relative "../bowling_score_calculator"
 
 class BowlingScoreCalculatorTest < Minitest::Test
+  def setup
+    @bowling_score_calculator = BowlingScoreCalculator.new
+  end
+
   def test_if_perfect_game_is_true
     rolls = Array.new(12, "X")
-
-    assert_equal true, perfect_game?(rolls)
+    assert_equal true, @bowling_score_calculator.perfect_game?(rolls)
   end
 
   def test_perfect_game_is_all_30
     rolls = ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"]
-    assert_equal [30] * 10, calculate_frames(rolls)
+    assert_equal [30] * 10, @bowling_score_calculator.calculate_frames(rolls)
   end
 
   def test_parses_open_frame
-    frames = parse_frames([4, 5])
+    frames = @bowling_score_calculator.generate_frames([4, 5])
     frame = frames.first
 
     assert_equal 1, frames.length
@@ -23,19 +26,19 @@ class BowlingScoreCalculatorTest < Minitest::Test
   end  
 
   def test_scores_parsed_open_frame
-    frames = parse_frames([4, 5])
+    frames = @bowling_score_calculator.generate_frames([4, 5])
 
     assert_equal 9, frames.first.score
   end
   
   def test_calculates_open_frame
-    assert_equal [9], calculate_frames([4, 5])
+    assert_equal [9], @bowling_score_calculator.calculate_frames([4, 5])
   end
 
   def test_parses_frame_with_spare
     rolls = [4, "/"]
 
-    frames = parse_frames(rolls)
+    frames = @bowling_score_calculator.generate_frames(rolls)
 
     assert_equal 1, frames.length
     assert_equal [4, "/"], frames.first.rolls
@@ -50,13 +53,13 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_nil_for_incomplete_spare
 		rolls = [4, "/"]
 
-		assert_equal [nil], calculate_frames(rolls)
+		assert_equal [nil], @bowling_score_calculator.calculate_frames(rolls)
 	end	
 
 	def test_parses_frame_with_complete_spare
 		rolls = [4, "/", 5]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 2, frames.length
 		assert_equal [4, "/"], frames.first.rolls
@@ -66,7 +69,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_scores_spare_when_bonus_roll_exists
 		rolls = [4, "/", 5]
 
-		scores = calculate_frames(rolls)
+		scores = @bowling_score_calculator.calculate_frames(rolls)
 
 		assert_equal 15, scores.first
 	end	  	
@@ -74,13 +77,13 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_scores_for_complete_spare
 		rolls = [4, "/", 5]
 
-		assert_equal [15, nil], calculate_frames(rolls)
+		assert_equal [15, nil], @bowling_score_calculator.calculate_frames(rolls)
 	end
 	
 	def test_parses_spare_followed_by_open_frame
 		rolls = [4, "/", 5, 4]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 2, frames.length
 		assert_equal [4, "/"], frames.first.rolls
@@ -90,7 +93,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_scores_spare_and_following_open_frame
     rolls = [4, "/", 5, 4]
 
-    scores = calculate_frames(rolls)
+    scores = @bowling_score_calculator.calculate_frames(rolls)
 
 		assert_equal [15, 9], scores
   end
@@ -98,7 +101,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_parses_single_strike
 		rolls = ["X"]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 1, frames.length
 		assert_equal ["X"], frames.first.rolls
@@ -107,7 +110,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_nil_for_single_strike
 		rolls = ["X"]
 
-		assert_equal [nil], calculate_frames(rolls)
+		assert_equal [nil], @bowling_score_calculator.calculate_frames(rolls)
 	end
 
 	def test_score_returns_nil_for_incomplete_strike
@@ -119,7 +122,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_parses_two_strikes
 		rolls = ["X", "X"]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 2, frames.length
 		assert_equal ["X"], frames.first.rolls
@@ -129,13 +132,13 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_nil_for_two_strikes
 		rolls = ["X", "X"]
 
-		assert_equal [nil, nil], calculate_frames(rolls)
+		assert_equal [nil, nil], @bowling_score_calculator.calculate_frames(rolls)
 	end
 	
 	def test_parses_three_strikes
 		rolls = ["X", "X", "X"]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 3, frames.length
 		assert_equal ["X"], frames[0].rolls
@@ -146,7 +149,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_scores_three_strikes
 		rolls = ["X", "X", "X"]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 30, frames.first.score
 		assert_nil frames[1].score
@@ -156,13 +159,13 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_scores_for_three_strikes
 		rolls = ["X", "X", "X"]
 
-		assert_equal [30, nil, nil], calculate_frames(rolls)
+		assert_equal [30, nil, nil], @bowling_score_calculator.calculate_frames(rolls)
 	end
 
 	def test_parses_three_strikes_followed_by_four
 		rolls = ["X", "X", "X", 4]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 4, frames.length
 		assert_equal ["X"], frames[0].rolls
@@ -175,7 +178,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_scores_three_strikes_followed_by_four
 		rolls = ["X", "X", "X", 4]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 30, frames[0].score
 		assert_equal 24, frames[1].score
@@ -186,13 +189,13 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_scores_for_three_strikes_followed_by_four
 		rolls = ["X", "X", "X", 4]
 
-		assert_equal [30, 24, nil, nil], calculate_frames(rolls)
+		assert_equal [30, 24, nil, nil], @bowling_score_calculator.calculate_frames(rolls)
 	end
 	
 	def test_parses_three_strikes_followed_by_open_frame
 		rolls = ["X", "X", "X", 4, 5]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 4, frames.length
 		assert_equal ["X"], frames[0].rolls
@@ -204,7 +207,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 	def test_calculate_frames_returns_scores_for_three_strikes_followed_by_open_frame
 		rolls = ["X", "X", "X", 4, 5]
 
-		assert_equal [30, 24, 19, 9], calculate_frames(rolls)
+		assert_equal [30, 24, 19, 9], @bowling_score_calculator.calculate_frames(rolls)
 	end
 	
 	def test_parses_complete_open_game
@@ -213,7 +216,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 			4, 5, 4, 5, 4, 5, 4, 5, 4, 5
 		]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 10, frames.length
 
@@ -228,7 +231,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 			4, 5, 4, 5, 4, 5, 4, 5, 4, 5
 		]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		frames.each do |frame|
 			assert_equal 9, frame.score
@@ -241,7 +244,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 			4, 5, 4, 5, 4, 5, 4, 5, 4, 5
 		]
 
-		assert_equal [9, 9, 9, 9, 9, 9, 9, 9, 9, 9], calculate_frames(rolls)
+		assert_equal [9, 9, 9, 9, 9, 9, 9, 9, 9, 9], @bowling_score_calculator.calculate_frames(rolls)
 	end
 
 	# The parser should not create a tenth frame until a tenth-frame roll exists.
@@ -252,7 +255,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 			"X"
 		]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 9, frames.length
 		assert_equal ["X"], frames.last.rolls
@@ -267,7 +270,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 			4
 		]
 
-		frames = parse_frames(rolls)
+		frames = @bowling_score_calculator.generate_frames(rolls)
 
 		assert_equal 10, frames.length
 		assert_instance_of Frame, frames[8]
@@ -283,7 +286,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 			4
 		]
 
-		assert_equal [9, 9, 9, 9, 9, 9, 9, 9, nil, nil], calculate_frames(rolls)
+		assert_equal [9, 9, 9, 9, 9, 9, 9, 9, nil, nil], @bowling_score_calculator.calculate_frames(rolls)
 	end	
 
 	# The ninth-frame strike uses the first two rolls from the tenth frame as its bonus.
@@ -297,7 +300,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 19, 9],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end	
 
@@ -317,19 +320,13 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, nil],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end	
 
 	# A tenth-frame spare requires one bonus roll before it can be scored.
 	def test_incomplete_tenth_frame_returns_nil_with_spare
 		frame = TenthFrame.new(4, "/")
-
-		assert_nil frame.score
-	end	
-
-	def test_incomplete_tenth_frame_returns_nil_with_one_roll
-		frame = TenthFrame.new(4)
 
 		assert_nil frame.score
 	end
@@ -351,7 +348,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, nil],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end
 	
@@ -365,7 +362,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, 20],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end
 	
@@ -379,7 +376,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, nil],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end	
 
@@ -394,7 +391,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, nil],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end
 	
@@ -408,7 +405,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, nil],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end	
 
@@ -422,7 +419,7 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 9, 9, 9, 9, 9, 9, 9, 9, 30],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end	
 
@@ -442,13 +439,93 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal(
 			[9, 13, 7, 15, 5, 20, 19, 9, 16, 8],
-			calculate_frames(rolls)
+			@bowling_score_calculator.calculate_frames(rolls)
 		)
 	end	
 
 	def test_gutter_game
-    rolls = [0, 0] * 10
+    rolls = [0] * 20
 
-    assert_equal [0] * 10, calculate_frames(rolls)
+    assert_equal [0] * 10, @bowling_score_calculator.calculate_frames(rolls)
   end
+end
+
+def test_calculate_frames_rejects_non_array_input
+  assert_raises(ArgumentError) do
+    calculate_frames(nil)
+  end
+end
+
+def test_calculate_frames_rejects_negative_roll
+  assert_raises(ArgumentError) do
+    calculate_frames([-1, 5])
+  end
+end
+
+def test_calculate_frames_rejects_roll_greater_than_nine
+  assert_raises(ArgumentError) do
+    calculate_frames([10, 0])
+  end
+end
+
+def test_calculate_frames_rejects_invalid_symbol
+  assert_raises(ArgumentError) do
+    calculate_frames([4, "A"])
+  end
+end
+
+def test_calculate_frames_rejects_nil_roll
+  assert_raises(ArgumentError) do
+    calculate_frames([4, nil])
+  end
+end
+
+def test_calculate_frames_rejects_decimal_roll
+  assert_raises(ArgumentError) do
+    calculate_frames([4, 5.5])
+  end
+end
+
+def test_calculate_frames_accepts_valid_open_game
+  rolls = [4, 5] * 10
+
+  assert_equal [9] * 10, calculate_frames(rolls)
+end
+
+def test_calculate_frames_accepts_perfect_game
+  rolls = ["X"] * 12
+
+  assert_equal [30] * 10, calculate_frames(rolls)
+end
+
+def test_calculate_frames_accepts_gutter_game
+  rolls = [0, 0] * 10
+
+  assert_equal [0] * 10, calculate_frames(rolls)
+end
+
+def test_next_frame_cannot_be_reassigned
+  first_frame = Frame.new(4, 5)
+  second_frame = Frame.new(3, 2)
+  replacement_frame = Frame.new(1, 1)
+
+  first_frame.next_frame = second_frame
+
+  error = assert_raises(ArgumentError) do
+    first_frame.next_frame = replacement_frame
+  end
+
+  assert_equal "Next frame already linked", error.message
+  assert_same second_frame, first_frame.next_frame
+end
+
+def test_tenth_frame_cannot_link_to_another_frame
+  tenth_frame = TenthFrame.new(4, 5)
+  extra_frame = Frame.new(3, 2)
+
+  error = assert_raises(ArgumentError) do
+    tenth_frame.next_frame = extra_frame
+  end
+
+  assert_equal "Tenth frame cannot have a next frame", error.message
 end
