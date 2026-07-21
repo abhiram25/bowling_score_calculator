@@ -448,84 +448,95 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
     assert_equal [0] * 10, @bowling_score_calculator.calculate_frames(rolls)
   end
-end
 
-def test_calculate_frames_rejects_non_array_input
-  assert_raises(ArgumentError) do
-    calculate_frames(nil)
-  end
-end
+	def test_calculate_frames_rejects_non_array_input
+		assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(nil)
+		end
+	end
 
-def test_calculate_frames_rejects_negative_roll
-  assert_raises(ArgumentError) do
-    calculate_frames([-1, 5])
-  end
-end
+	def test_calculate_frames_rejects_negative_roll
+		assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames([-1, 5])
+		end
+	end
 
-def test_calculate_frames_rejects_roll_greater_than_nine
-  assert_raises(ArgumentError) do
-    calculate_frames([10, 0])
-  end
-end
+	def test_calculate_frames_rejects_roll_greater_than_nine
+		assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames([10, 0])
+		end
+	end
 
-def test_calculate_frames_rejects_invalid_symbol
-  assert_raises(ArgumentError) do
-    calculate_frames([4, "A"])
-  end
-end
+	def test_calculate_frames_rejects_invalid_symbol
+		assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames([4, "A"])
+		end
+	end
 
-def test_calculate_frames_rejects_nil_roll
-  assert_raises(ArgumentError) do
-    calculate_frames([4, nil])
-  end
-end
+	def test_calculate_frames_rejects_nil_roll
+		assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames([4, nil])
+		end
+	end
 
-def test_calculate_frames_rejects_decimal_roll
-  assert_raises(ArgumentError) do
-    calculate_frames([4, 5.5])
-  end
-end
+	def test_calculate_frames_rejects_decimal_roll
+		assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames([4, 5.5])
+		end
+	end
 
-def test_calculate_frames_accepts_valid_open_game
-  rolls = [4, 5] * 10
+	def test_calculate_frames_accepts_valid_open_game
+		rolls = [4, 5] * 10
 
-  assert_equal [9] * 10, calculate_frames(rolls)
-end
+		assert_equal [9] * 10, @bowling_score_calculator.calculate_frames(rolls)
+	end
 
-def test_calculate_frames_accepts_perfect_game
-  rolls = ["X"] * 12
+	def test_calculate_frames_accepts_perfect_game
+		rolls = ["X"] * 12
 
-  assert_equal [30] * 10, calculate_frames(rolls)
-end
+		assert_equal [30] * 10, @bowling_score_calculator.calculate_frames(rolls)
+	end
 
-def test_calculate_frames_accepts_gutter_game
-  rolls = [0, 0] * 10
+	def test_calculate_frames_accepts_gutter_game
+		rolls = [0, 0] * 10
 
-  assert_equal [0] * 10, calculate_frames(rolls)
-end
+		assert_equal [0] * 10, @bowling_score_calculator.calculate_frames(rolls)
+	end
 
-def test_next_frame_cannot_be_reassigned
-  first_frame = Frame.new(4, 5)
-  second_frame = Frame.new(3, 2)
-  replacement_frame = Frame.new(1, 1)
+	def test_next_frame_cannot_be_reassigned
+		first_frame = Frame.new("X")
+		second_frame = Frame.new(3, 2)
+		replacement_frame = Frame.new(1, 1)
 
-  first_frame.next_frame = second_frame
+		first_frame.next_frame = second_frame
 
-  error = assert_raises(ArgumentError) do
-    first_frame.next_frame = replacement_frame
-  end
+		error = assert_raises(ArgumentError) do
+			first_frame.next_frame = replacement_frame
+		end
 
-  assert_equal "Next frame already linked", error.message
-  assert_same second_frame, first_frame.next_frame
-end
+		assert_equal "Next frame already linked", error.message
+		assert_same second_frame, first_frame.next_frame
+	end
 
-def test_tenth_frame_cannot_link_to_another_frame
-  tenth_frame = TenthFrame.new(4, 5)
-  extra_frame = Frame.new(3, 2)
+	def test_tenth_frame_cannot_link_to_another_frame
+		tenth_frame = TenthFrame.new(4, 5)
+		extra_frame = Frame.new(3, 2)
 
-  error = assert_raises(ArgumentError) do
-    tenth_frame.next_frame = extra_frame
-  end
+		error = assert_raises(ArgumentError) do
+			tenth_frame.next_frame = extra_frame
+		end
 
-  assert_equal "Tenth frame cannot have a next frame", error.message
+		assert_equal "Tenth frame cannot have a next frame", error.message
+	end
+
+	def test_open_frame_cannot_link_to_next_frame
+		open_frame = Frame.new(4, 5)
+		next_frame = Frame.new("X")
+
+		error = assert_raises(ArgumentError) do
+			open_frame.next_frame = next_frame
+		end
+
+		assert_equal "Open frames do not need a next frame", error.message
+	end	
 end

@@ -50,7 +50,12 @@ class BowlingScoreCalculator
 	end
 
 	def add_frame(frames, frame)
-		frames.last.next_frame = frame unless frames.empty?
+		previous_frame = frames.last
+
+		if previous_frame && !previous_frame.open_frame?
+			previous_frame.next_frame = frame
+		end
+
 		frames << frame
 	end
 end

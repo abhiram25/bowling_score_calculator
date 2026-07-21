@@ -23,7 +23,12 @@ class Frame
     strike? || rolls.length == 2
   end
 
+  def open_frame?
+    !strike? && !spare?
+  end
+
   def next_frame=(frame)
+    raise ArgumentError, "Open frames do not need a next frame" if open_frame?
     raise ArgumentError, "Next frame already linked" if @next_frame
     @next_frame = frame
   end 
