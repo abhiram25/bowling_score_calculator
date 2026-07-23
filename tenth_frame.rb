@@ -7,7 +7,7 @@ class TenthFrame < Frame
     return nil unless complete?
 
     if strike?
-      10 + value(rolls[1]) + value(rolls[2])
+      10 + value(rolls[1]) + third_roll_value
     elsif spare?
       10 + value(rolls[2])
     else
@@ -28,4 +28,12 @@ class TenthFrame < Frame
   def next_frame=(_frame)
     raise ArgumentError, "Tenth frame cannot have a next frame"
   end  
+
+  private
+
+  def third_roll_value
+    return 10 - value(rolls[1]) if rolls[2] == "/"
+
+    value(rolls[2])
+  end
 end

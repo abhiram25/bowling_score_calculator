@@ -15,7 +15,6 @@ class BowlingScoreCalculator
 		end
 
 		frames = generate_frames(rolls)
-		InputValidator.validate_frames!(frames)
 		frames.map(&:score)
 	end
 
@@ -46,7 +45,8 @@ class BowlingScoreCalculator
 		end
 
 		add_frame(frames, TenthFrame.new(*rolls[i..])) if i < rolls.length
-
+		InputValidator.validate_frames!(frames)
+		InputValidator.validate_tenth_frame!(frames.last) if frames.last.is_a?(TenthFrame)
 		frames
 	end
 

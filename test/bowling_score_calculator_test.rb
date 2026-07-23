@@ -540,6 +540,26 @@ class BowlingScoreCalculatorTest < Minitest::Test
 		assert_equal "Open frames do not need a next frame", error.message
 	end	
 
+	def test_tenth_frame_with_strike_and_spare_bonus_rolls_scores_correctly
+		rolls = [
+			4, 5,       
+			6, "/",     
+			3, 4,       
+			"X",        
+			2, 3,       
+			8, "/",     
+			"X",        
+			5, 4,       
+			7, "/",     
+			"X", 6, "/"
+		]
+
+		assert_equal(
+			[9, 13, 7, 15, 5, 20, 19, 9, 20, 20],
+			@bowling_score_calculator.calculate_frames(rolls)
+		)
+	end
+
 	def test_first_roll_in_frame_cannot_be_spare
 		rolls = ["/", 5]
 
@@ -558,5 +578,65 @@ class BowlingScoreCalculatorTest < Minitest::Test
 		end
 
 		assert_equal "Second roll in a frame cannot be a strike in a normal frame.", error.message
+	end
+
+	def test_too_many_rolls_in_a_game
+		rolls = [4, 5] * 11
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "Cannot have more than 21 rolls in a game", error.message
+	end
+
+	def test_empty_rolls_array
+		rolls = []
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "Rolls cannot be empty", error.message
+	end
+
+	def test_tenth_frame_first_roll_cannot_be_spare
+		rolls = [4, 5] * 9 + ["/", 5]
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "First roll in a frame cannot be a spare", error.message
+	end
+
+	def	 test_tenth_frame_second_roll_cannot_be_strike_unless_first_roll_is_strike
+		rolls = [4, 5] * 9 + [4, "X"]
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "Second roll in the tenth frame cannot be a strike unless the first roll is a strike", error.message
+	end
+
+	def test_tenth_frame_second_roll_cannot_be_spare_if_first_roll_is_strike
+		rolls = [4, 5] * 9 + ["X", "/"]
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "Second roll in the tenth frame cannot be a spare if the first roll is a strike", error.message
+	end
+
+	def test_tenth_frame_third_roll_cannot_be_spare_unless_first_roll_is_strike_and_second_roll_is_numeric
+		rolls = [4, 5] * 9 + ["X", "X", "/"]
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "Third roll in the tenth frame can only be a spare after a strike followed by a numeric roll", error.message
 	end
 end
