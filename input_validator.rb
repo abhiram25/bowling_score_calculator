@@ -13,4 +13,12 @@ class InputValidator
       end
     end
   end
+
+  def self.validate_frames!(frames)
+    if frames.any? { |frame| frame.rolls.first == "/" }
+			raise ArgumentError, "First roll in a frame cannot be a spare" 
+		elsif frames.any? { |frame| frame.rolls[1] == "X" && frame.class == Frame }
+    	raise ArgumentError, "Second roll in a frame cannot be a strike in a normal frame."
+		end
+  end
 end

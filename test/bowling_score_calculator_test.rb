@@ -539,4 +539,24 @@ class BowlingScoreCalculatorTest < Minitest::Test
 
 		assert_equal "Open frames do not need a next frame", error.message
 	end	
+
+	def test_first_roll_in_frame_cannot_be_spare
+		rolls = ["/", 5]
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "First roll in a frame cannot be a spare", error.message
+	end
+
+	def test_second_roll_in_a_regular_frame_cannot_be_strike
+		rolls = [5, "X"]
+
+		error = assert_raises(ArgumentError) do
+			@bowling_score_calculator.calculate_frames(rolls)
+		end
+
+		assert_equal "Second roll in a frame cannot be a strike in a normal frame.", error.message
+	end
 end

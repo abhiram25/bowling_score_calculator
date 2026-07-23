@@ -15,6 +15,7 @@ class BowlingScoreCalculator
 		end
 
 		frames = generate_frames(rolls)
+		InputValidator.validate_frames!(frames)
 		frames.map(&:score)
 	end
 
