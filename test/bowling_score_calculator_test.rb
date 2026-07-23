@@ -443,6 +443,39 @@ class BowlingScoreCalculatorTest < Minitest::Test
 		)
 	end	
 
+	def test_calculate_frames_scores_mixed_game_with_tenth_frame_spare
+		rolls = [
+			4, 5,       # 9
+			"X",        # 19
+			8, 1,       # 9
+			6, "/",     # 15
+			5, 3,       # 8
+			"X",        # 30
+			"X",        # 20
+			7, 3,       # 10
+			4, 2,       # 6
+			6, "/", 8   # 18
+		]
+
+		expected_scores = [
+			9,
+			19,
+			9,
+			15,
+			8,
+			27,
+			20,
+			10,
+			6,
+			18
+		]
+
+		assert_equal expected_scores,
+								@bowling_score_calculator.calculate_frames(rolls)
+end
+			
+
+
 	def test_gutter_game
     rolls = [0] * 20
 
